@@ -60,12 +60,12 @@ def start_on_click():
     elif num_of_sessions % 2 == 0 and num_of_sessions < 8:
         count_down(short_break_starting_time)
         timer_label.config(text="Break", fg=PINK)
-        messagebox.showinfo(title="Break", message="Take a short break!")
+        messagebox.showinfo(title="Short Break", message="Take a short break!")
     # session 8
     elif num_of_sessions == 8:
         count_down(ling_break_starting_time)
-        timer_label.config(text="Break", fg=RED)
-        messagebox.showinfo(title="Break", message="Well done! Time to relax!")
+        timer_label.config(text="Relax", fg=RED)
+        messagebox.showinfo(title="Long Break", message="Well done! Time to relax!")
     else:
         timer_label.config(text="Done!", fg=GREEN)
         return
@@ -79,6 +79,17 @@ def format_time(count_num):
     # 2 - Minimum width (total characters)
     # d - Type specifier (decimal integer)
     return f"{count_min:02d}:{count_sec:02d}"
+
+def popup_window():
+    """popup the window even when minimized"""
+    # unhide the window
+    window.deiconify()
+    # Force focus to the window
+    window.focus_force()
+    # make the window stay always on top of all other windows on the screen
+    window.attributes('-topmost', 1)
+    # disable the "always on top" property of the window
+    window.attributes('-topmost', 0)
 
 def count_down(count):
     # print(count)
@@ -96,8 +107,7 @@ def count_down(count):
     # when count down ends:
     else:
         # window popup on top of all other windows
-        window.attributes('-topmost', True)
-        window.attributes('-topmost', False)
+        popup_window()
 
         # ring the bell
         window.bell()

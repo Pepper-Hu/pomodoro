@@ -12,22 +12,48 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-starting_time = WORK_MIN * 60
+SEC_PER_MIN = 1
+num_of_sessions = 0
+
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_on_click():
     pass
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_on_click():
-    count_down(starting_time)
+    global num_of_sessions
+    num_of_sessions += 1
+    print(num_of_sessions)
+
+    work_starting_time = WORK_MIN * SEC_PER_MIN
+    short_break_starting_time = SHORT_BREAK_MIN * SEC_PER_MIN
+    ling_break_starting_time = LONG_BREAK_MIN * SEC_PER_MIN
+
+    # session 1, 3, 5, 7
+    if num_of_sessions % 2 == 1:
+        count_down(work_starting_time)
+        timer_label.config(text="Work", fg=GREEN)
+    # session 2, 4, 6
+    elif num_of_sessions % 2 == 0:
+        count_down(short_break_starting_time)
+        timer_label.config(text="Break", fg=PINK)
+    # session 8
+    elif num_of_sessions == 8:
+        count_down(ling_break_starting_time)
+        timer_label.config(text="Break", fg=RED)
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def format_time(count_num):
     count_min = math.floor(count_num / 60)
     count_sec = math.floor(count_num % 60)
+    # : - Start of format specification
+    # 0 - Fill character (what to pad with)
+    # 2 - Minimum width (total characters)
+    # d - Type specifier (decimal integer)
     return f"{count_min:02d}:{count_sec:02d}"
 
 def count_down(count):
-    print(count)
+    # print(count)
 
     # # timer display using time
     # canvas.itemconfig(timer_txt, text=time.strftime('%M:%S', time.gmtime(count)))
@@ -36,6 +62,18 @@ def count_down(count):
 
     if count > 0:
         window.after(1000, count_down, count -1)
+    else:
+        # when count down ends, start timer again
+        start_on_click()
+
+        # display checkmark when work session finished
+        check_marks = ""
+        work_sessions = math.floor(num_of_sessions / 2)
+
+        for _ in range(work_sessions):
+            check_marks += "✔"
+
+        checkmark_label.config(text = check_marks)
 
 # ---------------------------- UI SETUP ------------------------------- #
 # window
@@ -58,7 +96,7 @@ canvas.grid(column=1, row=1)
 timer_label = tk.Label(text="Timer", bg=YELLOW, fg=GREEN, font=(FONT_NAME, 45, "bold"))
 timer_label.grid(column=1, row=0)
 
-checkmark_label =tk.Label(text="✔", bg=YELLOW, fg=GREEN, font=(FONT_NAME, 17, "normal"))
+checkmark_label =tk.Label(bg=YELLOW, fg=GREEN, font=(FONT_NAME, 17, "normal"))
 checkmark_label.grid(column=1, row=3)
 
 # botton

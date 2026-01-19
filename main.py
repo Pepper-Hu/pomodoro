@@ -12,13 +12,24 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-SEC_PER_MIN = 1
+SEC_PER_MIN = 60
 num_of_sessions = 0
-
+timer = None
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_on_click():
-    pass
+    # stop count down
+    window.after_cancel(timer)
+
+    # reset session
+    global num_of_sessions
+    num_of_sessions = 0
+
+    # reset UI
+    timer_label.config(text="Timer", fg=GREEN)
+    canvas.itemconfig(timer_txt, text="00:00")
+    checkmark_label.config(text="")
+
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_on_click():
     global num_of_sessions
@@ -57,11 +68,11 @@ def count_down(count):
 
     # # timer display using time
     # canvas.itemconfig(timer_txt, text=time.strftime('%M:%S', time.gmtime(count)))
-
     canvas.itemconfig(timer_txt, text=format_time(count))
 
     if count > 0:
-        window.after(1000, count_down, count -1)
+        global timer
+        timer = window.after(1000, count_down, count -1)
     else:
         # when count down ends, start timer again
         start_on_click()

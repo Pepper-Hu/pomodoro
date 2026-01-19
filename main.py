@@ -12,7 +12,7 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-SEC_PER_MIN = 60
+SEC_PER_MIN = 1
 num_of_sessions = 0
 timer = None
 
@@ -41,17 +41,20 @@ def start_on_click():
     ling_break_starting_time = LONG_BREAK_MIN * SEC_PER_MIN
 
     # session 1, 3, 5, 7
-    if num_of_sessions % 2 == 1:
+    if num_of_sessions % 2 == 1 and num_of_sessions < 8:
         count_down(work_starting_time)
         timer_label.config(text="Work", fg=GREEN)
     # session 2, 4, 6
-    elif num_of_sessions % 2 == 0:
+    elif num_of_sessions % 2 == 0 and num_of_sessions < 8:
         count_down(short_break_starting_time)
         timer_label.config(text="Break", fg=PINK)
     # session 8
     elif num_of_sessions == 8:
         count_down(ling_break_starting_time)
         timer_label.config(text="Break", fg=RED)
+    else:
+        timer_label.config(text="Done!", fg=GREEN)
+        return
 
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 def format_time(count_num):
@@ -70,11 +73,22 @@ def count_down(count):
     # canvas.itemconfig(timer_txt, text=time.strftime('%M:%S', time.gmtime(count)))
     canvas.itemconfig(timer_txt, text=format_time(count))
 
+    # When count down is on
     if count > 0:
         global timer
+        # count every 1 second
         timer = window.after(1000, count_down, count -1)
+
+    # when count down ends:
     else:
-        # when count down ends, start timer again
+        # window popup on top of all other windows
+        window.attributes('-topmost', True)
+        window.attributes('-topmost', False)
+
+        # ring the bell
+        window.bell()
+
+        # start timer again
         start_on_click()
 
         # display checkmark when work session finished

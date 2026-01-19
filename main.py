@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import PhotoImage
 import time
+import math
 
 # ---------------------------- CONSTANTS ------------------------------- #
 PINK = "#e2979c"
@@ -20,11 +21,18 @@ def reset_on_click():
 def start_on_click():
     count_down(starting_time)
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
+def format_time(count_num):
+    count_min = math.floor(count_num / 60)
+    count_sec = math.floor(count_num % 60)
+    return f"{count_min:02d}:{count_sec:02d}"
 
 def count_down(count):
     print(count)
 
-    canvas.itemconfig(timer_txt, text=time.strftime('%M:%S', time.gmtime(count)))
+    # # timer display using time
+    # canvas.itemconfig(timer_txt, text=time.strftime('%M:%S', time.gmtime(count)))
+
+    canvas.itemconfig(timer_txt, text=format_time(count))
 
     if count > 0:
         window.after(1000, count_down, count -1)

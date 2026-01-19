@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import PhotoImage
+from tkinter import messagebox
 import time
 import math
 
@@ -9,7 +10,7 @@ RED = "#e7305b"
 GREEN = "#9bdeac"
 YELLOW = "#f7f5dd"
 FONT_NAME = "Courier"
-WORK_MIN = 25
+WORK_MIN = 7
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 SEC_PER_MIN = 1
@@ -18,6 +19,11 @@ timer = None
 
 # ---------------------------- TIMER RESET ------------------------------- #
 def reset_on_click():
+    # disable reset btn
+    reset_btn.config(state="disabled")
+    # enable start btn
+    start_btn.config(state="normal")
+
     # stop count down
     window.after_cancel(timer)
 
@@ -32,6 +38,11 @@ def reset_on_click():
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def start_on_click():
+    # disable start btn
+    start_btn.config(state="disabled")
+    # enable reset btn
+    reset_btn.config(state="normal")
+
     global num_of_sessions
     num_of_sessions += 1
     print(num_of_sessions)
@@ -44,14 +55,17 @@ def start_on_click():
     if num_of_sessions % 2 == 1 and num_of_sessions < 8:
         count_down(work_starting_time)
         timer_label.config(text="Work", fg=GREEN)
+        messagebox.showinfo(title="Work", message="Time to work!")
     # session 2, 4, 6
     elif num_of_sessions % 2 == 0 and num_of_sessions < 8:
         count_down(short_break_starting_time)
         timer_label.config(text="Break", fg=PINK)
+        messagebox.showinfo(title="Break", message="Take a short break!")
     # session 8
     elif num_of_sessions == 8:
         count_down(ling_break_starting_time)
         timer_label.config(text="Break", fg=RED)
+        messagebox.showinfo(title="Break", message="Well done! Time to relax!")
     else:
         timer_label.config(text="Done!", fg=GREEN)
         return
@@ -132,7 +146,8 @@ start_btn = tk.Button(text="Start",
                       height=1,
                       bg="white",
                       highlightthickness=0,
-                      command=start_on_click)
+                      command=start_on_click,
+                      state="normal")
 start_btn.grid(column=0, row=2)
 reset_btn = tk.Button(text="Reset",
                       font=(FONT_NAME, 12, "bold"),
@@ -141,7 +156,8 @@ reset_btn = tk.Button(text="Reset",
                       height=1,
                       bg="white",
                       highlightthickness=0,
-                      command=reset_on_click)
+                      command=reset_on_click,
+                      state="disabled")
 reset_btn.grid(column=2, row=2)
 
 window.mainloop()
